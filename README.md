@@ -16,9 +16,15 @@ the figures and plots used to analyze the model in the report are both saved in 
 # Packages required to run the code
 
 numpy
+
 matplotlib
+
 seaborn
+
 scikit-learn
+
 medmnist
+
 tensorflow
+
 random
