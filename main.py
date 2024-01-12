@@ -29,6 +29,7 @@ linear_accuracies = []
 poly_accuracies = []
 rbf_accuracies = []
 
+#set C from 0.1, 0.2 to 1, 1, 2 to 10 and 10, 20 to 100
 C_values = np.concatenate((np.arange(0.1, 1.1, 0.1), np.arange(1, 11, 1),np.arange(10, 110, 10)))
 
 for C in C_values:
@@ -42,7 +43,8 @@ for C in C_values:
 for C in C_values:
     y_pred, rbf_accuracy = A.SVM_model(Pn_train_flat, Pn_train_labels, Pn_val_flat, Pn_val_labels, 'rbf', C)
     rbf_accuracies.append(rbf_accuracy)
-    
+
+#obtain the accuracy and plot the different kernel's accuracy vs C values
 A.plot_acc(C_values,poly_accuracies,linear_accuracies,rbf_accuracies)
 
 
@@ -65,24 +67,27 @@ Pn_test_images = A.CNN_flatten(Pn_test)
 Pn_CNN_model = A.CNN_model()
 Pn_CNN_model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-# Pn_CNN_val = Pn_CNN_model.fit(Pn_train_images, Pn_train_labels, steps_per_epoch=235 ,epochs=20, validation_data=(Pn_val_images, Pn_val_labels), validation_steps=30)
+# test validation set if needed
+# Pn_CNN_val = Pn_CNN_model.fit(Pn_train_images, Pn_train_labels, steps_per_epoch=147 ,epochs=30, validation_data=(Pn_val_images, Pn_val_labels), validation_steps=15)
 # A.CNN_result(Pn_CNN_val)
+
+#test dataset into CNN model
 Pn_CNN_test = Pn_CNN_model.fit(Pn_train_images, Pn_train_labels, steps_per_epoch=147 ,epochs=30, validation_data=(Pn_test_images, Pn_test_labels), validation_steps=19, batch_size = 32 )
 #show the loss and accuracy
 A.CNN_result(Pn_CNN_test)
 
-#Flatten Random Forest
+#Flatten the PathMNIST data for Random Forest model
 Pa_train_flat = B.RF_flatten(Pa_train)
 Pa_val_flat = B.RF_flatten(Pa_val)
 Pa_test_flat = B.RF_flatten(Pa_test)
 
-#set up Random Forest Model
+#set up Random Forest Model and get prediction
 RF_test_pred, RF_test_acc = B.RF_model(Pa_train_flat, Pa_train_labels, Pa_test_flat, Pa_test_labels)
 
 #use confusion matrix to analysis the result
 B.con_matrix(Pa_test_labels, RF_test_pred, 'RF_confusion_matrix')
 
-#CNN model for PathMNIST
+#flatten the data for CNN model of PathMNIST
 Pa_train_images = B.CNN_flatten(Pa_train)
 Pa_val_images = B.CNN_flatten(Pa_val)
 Pa_test_images = B.CNN_flatten(Pa_test)
@@ -91,9 +96,11 @@ Pa_test_images = B.CNN_flatten(Pa_test)
 Pa_CNN_model = B.CNN_model()
 Pa_CNN_model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
+# test validation set if needed
 # val_history = Pa_CNN_model.fit(Pa_train_images, Pa_train_labels, steps_per_epoch=1000 ,epochs=30, validation_data=(Pa_val_images, Pa_val_labels), validation_steps=100, batch_size=32)
 # B.CNN_result(val_history,'validation')
 
+#train and test part of the dataset to save time
 test_history = Pa_CNN_model.fit(Pa_train_images, Pa_train_labels, steps_per_epoch=1000 ,epochs=30, validation_data=(Pa_test_images, Pa_test_labels), validation_steps=100, batch_size=32)
 #show the loss and accuracy
 B.CNN_result(test_history,'test')
