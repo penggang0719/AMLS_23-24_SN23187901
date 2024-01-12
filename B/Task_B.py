@@ -19,7 +19,7 @@ def download_Pa_data():
 
     return
 
-# #load and split the data
+# load and split the data
 def load_data(path):
 
     Pa = np.load(path)
