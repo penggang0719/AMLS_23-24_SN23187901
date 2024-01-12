@@ -1,6 +1,7 @@
 # AMLS_23-24_SN23187901
 
 add a folder called dataset first
+
 run the main.py file
 
 A folder contains SVM and CNN model for task A
