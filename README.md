@@ -1,5 +1,7 @@
 # AMLS_23-24_SN23187901
 
+# Organization
+
 To run the main.py file, add the npz format datasets into dataset folder first
 
 main.py will load the datasets first and do data pre-processing for task A. Then find the best kernel and C value combination for SVM model using validation set. Use the optimized model to predict test set.
