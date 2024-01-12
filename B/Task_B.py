@@ -1,21 +1,12 @@
 import numpy as np
-import pandas as pd 
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from medmnist import PathMNIST
-import random
-
-
-
-import tensorflow as tf
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
-from keras.optimizers import RMSprop,SGD,Adam
-
 
 #PRE-PROCESSING DATA
 

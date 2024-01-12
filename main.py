@@ -6,7 +6,7 @@ import B.Task_B as B
 # Pn = A.download_Pn_data()
 # Pa = B.download_Pa_data()
 
-# load and split the data from dataset folder use the load_data function in task_A
+# load and split the data from dataset folder use the load_data function
 Pn_path = 'AMLS_23-24_SN23187901/dataset/pneumoniamnist.npz'
 Pn, Pn_train, Pn_val, Pn_test, Pn_train_labels, Pn_val_labels, Pn_test_labels = A.load_data(Pn_path)
 Pa_path = 'AMLS_23-24_SN23187901/dataset/pathmnist.npz'
@@ -51,9 +51,7 @@ kernel = 'rbf'
 C = 5
 test_pred, test_acc= A.SVM_model(Pn_train_flat, Pn_train_labels, Pn_test_flat, Pn_test_labels, kernel, C)
 
-print(test_acc)
-pred_normal, pred_pneumonia = A.count_pneumonia(test_pred)
-
+#visualise the prediction result and use confusion matrix to analysis the result
 A.visualize_pred( Pn_test, Pn_test_labels, test_pred, 9, 'visualize')
 
 A.con_matrix(Pn_test_labels, test_pred, 'test_pred')
@@ -63,12 +61,14 @@ Pn_train_images = A.CNN_flatten(Pn_train)
 Pn_val_images = A.CNN_flatten(Pn_val)
 Pn_test_images = A.CNN_flatten(Pn_test)
 
+#set up and compile a CNN model
 Pn_CNN_model = A.CNN_model()
 Pn_CNN_model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 # Pn_CNN_val = Pn_CNN_model.fit(Pn_train_images, Pn_train_labels, steps_per_epoch=235 ,epochs=20, validation_data=(Pn_val_images, Pn_val_labels), validation_steps=30)
 # A.CNN_result(Pn_CNN_val)
-Pn_CNN_test = Pn_CNN_model.fit(Pn_train_images, Pn_train_labels, steps_per_epoch=200 ,epochs=20, validation_data=(Pn_test_images, Pn_test_labels), validation_steps=20)
+Pn_CNN_test = Pn_CNN_model.fit(Pn_train_images, Pn_train_labels, steps_per_epoch=147 ,epochs=30, validation_data=(Pn_test_images, Pn_test_labels), validation_steps=19, batch_size = 32 )
+#show the loss and accuracy
 A.CNN_result(Pn_CNN_test)
 
 #Flatten Random Forest
@@ -76,22 +76,24 @@ Pa_train_flat = B.RF_flatten(Pa_train)
 Pa_val_flat = B.RF_flatten(Pa_val)
 Pa_test_flat = B.RF_flatten(Pa_test)
 
-RF_val_pred, RF_val_acc = B.RF_model(Pa_train_flat, Pa_train_labels, Pa_val_flat, Pa_val_labels)
+#set up Random Forest Model
 RF_test_pred, RF_test_acc = B.RF_model(Pa_train_flat, Pa_train_labels, Pa_test_flat, Pa_test_labels)
 
-B.con_matrix(Pa_val_labels, RF_val_pred, 'RF_confusion_matrix')
+#use confusion matrix to analysis the result
 B.con_matrix(Pa_test_labels, RF_test_pred, 'RF_confusion_matrix')
 
-#CNN model
+#CNN model for PathMNIST
 Pa_train_images = B.CNN_flatten(Pa_train)
 Pa_val_images = B.CNN_flatten(Pa_val)
 Pa_test_images = B.CNN_flatten(Pa_test)
 
+#set up and compile a CNN model
 Pa_CNN_model = B.CNN_model()
 Pa_CNN_model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-val_history = Pa_CNN_model.fit(Pa_train_images, Pa_train_labels, steps_per_epoch=200 ,epochs=50, validation_data=(Pa_val_images, Pa_val_labels), validation_steps=20)
-B.CNN_result(val_history,'validation')
+# val_history = Pa_CNN_model.fit(Pa_train_images, Pa_train_labels, steps_per_epoch=1000 ,epochs=30, validation_data=(Pa_val_images, Pa_val_labels), validation_steps=100, batch_size=32)
+# B.CNN_result(val_history,'validation')
 
-test_history = Pa_CNN_model.fit(Pa_train_images, Pa_train_labels, steps_per_epoch=200 ,epochs=20, validation_data=(Pa_test_images, Pa_test_labels), validation_steps=20)
+test_history = Pa_CNN_model.fit(Pa_train_images, Pa_train_labels, steps_per_epoch=1000 ,epochs=30, validation_data=(Pa_test_images, Pa_test_labels), validation_steps=100, batch_size=32)
+#show the loss and accuracy
 B.CNN_result(test_history,'test')
